@@ -10,22 +10,6 @@ public class ReentrantLockValidator {
     private static char deletionChar;
     private static String string;
 
-    public static void main(String[] args) {
-
-        //String s = "{{}{{}}{}{}}{}";
-        //String s = "{{}{{}}{}{}}{{{}}}{}";
-        String s = "x{x}x}x{x}x}x";
-        //String s = "{}}{}}";
-        //String s = "x{x}x}x{x}x}x";
-        //String s = "{}x}x}";
-
-        ReentrantLockValidator.validate(s).forEach(x -> {
-            final String collect = String.join(" ", x.split(""));
-            System.out.println(collect);
-        });
-
-    }
-
     public static Set<String> validate(String input) {
 
         Set<String> set = new TreeSet<>();
@@ -42,25 +26,6 @@ public class ReentrantLockValidator {
 
         recursion(string, 0, set);
 
-/*
-        for (int i = 0; i < s.length(); i++) {
-
-            String s2 = s.substring(0, i) + s.substring(i + 1);
-
-            for (int j = i; j < s2.length(); j++) {
-
-                String s3 = s2.substring(0, j) + s2.substring(j + 1);
-
-                for (int k = j; k < s3.length(); k++) {
-
-                    String s4 = s3.substring(0, k) + s3.substring(k + 1);
-                    if (unclosedBrackets(s4)) set.add(s4);
-                }
-
-            }
-
-        }
-*/
         return set;
 
     }
