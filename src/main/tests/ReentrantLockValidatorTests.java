@@ -22,18 +22,28 @@ public class ReentrantLockValidatorTests {
         assertEquals(set2,
                 ReentrantLockValidator.validate("{}x}x}"));
 
-        final TreeSet<String> set3 = new TreeSet<>();
-        assertEquals(set3,
+        final TreeSet<String> emptySet = new TreeSet<>();
+        assertEquals(emptySet,
                 ReentrantLockValidator.validate("{"));
+        assertEquals(emptySet,
+                ReentrantLockValidator.validate("}"));
+        assertEquals(emptySet,
+                ReentrantLockValidator.validate("{{{"));
+        assertEquals(emptySet,
+                ReentrantLockValidator.validate("}}}"));
 
         final TreeSet<String> set4 = new TreeSet<>(Arrays.asList("{{}{{}}{}{}}{}"));
         assertEquals(set4,
                 ReentrantLockValidator.validate("{{}{{}}{}{}}{}"));
 
         final Set<String> set5 = new TreeSet<>(Arrays
-                .asList("{{}}", "{}{}"));
+                .asList("xxxxx{xxxxxxxxxxxx{xxxx}xxxx}xxxx",
+                        "xxxxx{xxxxxxxx}xxxx{xxxxxxxx}xxxx",
+                        "xxxxx{xxxxxxxx}xxxx{xxxx}xxxxxxxx",
+                        "xxxxx{xxxx}xxxxxxxx{xxxxxxxx}xxxx",
+                        "xxxxx{xxxx}xxxxxxxx{xxxx}xxxxxxxx"));
         assertEquals(set5,
-                ReentrantLockValidator.validate("xxxxx{xxxx}xxxx}x{x}x}x"));
+                ReentrantLockValidator.validate("xxxxx{xxxx}xxxx}xxxx{xxxx}xxxx}xxxx"));
 
     }
 
