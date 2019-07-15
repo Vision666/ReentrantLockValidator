@@ -1,6 +1,7 @@
+package by.vision.rlv;
+
 import static org.junit.Assert.*;
 
-import by.vision.rlv.ReentrantLockValidator;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -22,6 +23,19 @@ public class ReentrantLockValidatorTests {
         assertEquals(set2,
                 ReentrantLockValidator.validate("{}x}x}"));
 
+        final TreeSet<String> set3 = new TreeSet<>(Arrays.asList("{{}{{}}{}{}}{}"));
+        assertEquals(set3,
+                ReentrantLockValidator.validate("{{}{{}}{}{}}{}"));
+        final Set<String> set4 = new TreeSet<>(Arrays
+                .asList("xxxxx{xxxxxxxxxxxx{xxxx}xxxx}xxxx",
+                        "xxxxx{xxxxxxxx}xxxx{xxxxxxxx}xxxx",
+                        "xxxxx{xxxxxxxx}xxxx{xxxx}xxxxxxxx",
+                        "xxxxx{xxxx}xxxxxxxx{xxxxxxxx}xxxx",
+                        "xxxxx{xxxx}xxxxxxxx{xxxx}xxxxxxxx"));
+
+        assertEquals(set4,
+                ReentrantLockValidator.validate("xxxxx{xxxx}xxxx}xxxx{xxxx}xxxx}xxxx"));
+
         final TreeSet<String> emptySet = new TreeSet<>();
         assertEquals(emptySet,
                 ReentrantLockValidator.validate("{"));
@@ -31,20 +45,8 @@ public class ReentrantLockValidatorTests {
                 ReentrantLockValidator.validate("{{{"));
         assertEquals(emptySet,
                 ReentrantLockValidator.validate("}}}"));
-
-        final TreeSet<String> set4 = new TreeSet<>(Arrays.asList("{{}{{}}{}{}}{}"));
-        assertEquals(set4,
-                ReentrantLockValidator.validate("{{}{{}}{}{}}{}"));
-
-        final Set<String> set5 = new TreeSet<>(Arrays
-                .asList("xxxxx{xxxxxxxxxxxx{xxxx}xxxx}xxxx",
-                        "xxxxx{xxxxxxxx}xxxx{xxxxxxxx}xxxx",
-                        "xxxxx{xxxxxxxx}xxxx{xxxx}xxxxxxxx",
-                        "xxxxx{xxxx}xxxxxxxx{xxxxxxxx}xxxx",
-                        "xxxxx{xxxx}xxxxxxxx{xxxx}xxxxxxxx"));
-        assertEquals(set5,
-                ReentrantLockValidator.validate("xxxxx{xxxx}xxxx}xxxx{xxxx}xxxx}xxxx"));
-
+        assertEquals(emptySet,
+                ReentrantLockValidator.validate(null));
     }
 
 }

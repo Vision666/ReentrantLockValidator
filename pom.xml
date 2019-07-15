@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>by.vision.rlv</groupId>
-    <artifactId>ReentrantLock validator</artifactId>
+    <artifactId>ReentrantLockValidator</artifactId>
     <version>1.0-SNAPSHOT</version>
     <build>
         <plugins>
@@ -16,6 +16,7 @@
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
+                <version>3.1</version>
             </plugin>
         </plugins>
     </build>

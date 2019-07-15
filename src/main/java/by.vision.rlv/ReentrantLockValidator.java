@@ -10,17 +10,19 @@ public class ReentrantLockValidator {
     private static char deletionChar;
     private static String currentStr;
 
+    /**
+     * Delete minimal number of
+     *
+     * @param input
+     * @return
+     */
     public static Set<String> validate(String input) {
 
         Set<String> set = new TreeSet<>();
 
-        currentStr = edgeCases(input);
+        if (!edgeCasesCheck(input)) return set;
 
-        //check if current string can be converted to "correct"
-        //i.e. string should have one or more '{'  '}' pair
-        if (!currentStr.contains("{") || !currentStr.contains("}")) return set;
-
-        numToDelete = unnecessaryBrackets(currentStr);
+        numToDelete = unnecessaryBraces(currentStr);
 
         fillSet(currentStr, 0, set);
 
@@ -32,9 +34,12 @@ public class ReentrantLockValidator {
      * Get rid of all closing braces '}'  at the beginning
      * and all opening braces '{' at the end of string(sb)
      *
-     * @param str
+     * @param str string to validate for edge cases
+     * @return true if string meets all conditions; false otherwise.
      */
-    private static String edgeCases(String str) {
+    private static boolean edgeCasesCheck(String str) {
+        if (str == null) return false;
+
         final StringBuilder sb = new StringBuilder(str);
 
         while (sb.indexOf("}") > -1 && sb.indexOf("}") < sb.indexOf("{")) {
@@ -46,29 +51,35 @@ public class ReentrantLockValidator {
             sb.deleteCharAt(index);
         }
 
-        return sb.toString();
+        //check if current string can be converted to "correct"
+        //i.e. string should have at least one opening and closing braces
+        if (sb.indexOf("{") == -1 || sb.indexOf("}") == -1) return false;
+
+        currentStr = sb.toString();
+
+        return true;
     }
 
     /**
-     * Count bare minimum number of brackets that needed to be deleted
+     * Count bare minimum number of braces that needed to be deleted
      * from string(str) to make it "correct"
      *
      * @param str
-     * @return brackets number to delete
+     * @return number of braces needed to delete
      */
-    private static int unnecessaryBrackets(String str) {
+    private static int unnecessaryBraces(String str) {
         int counter;
 
-        int openBracketsCount = 0;
-        int closedBracketsCount = 0;
+        int openingBracesCount = 0;
+        int closingBracesCount= 0;
 
         for (char c :
                 str.toCharArray()) {
-            if (c == '{') openBracketsCount++;
-            if (c == '}') closedBracketsCount++;
+            if (c == '{') openingBracesCount++;
+            if (c == '}') closingBracesCount++;
         }
 
-        counter = openBracketsCount - closedBracketsCount;
+        counter = openingBracesCount - closingBracesCount;
 
         if (counter > 0) {
             deletionChar = '{';
@@ -84,20 +95,22 @@ public class ReentrantLockValidator {
     /**
      * Fill set with all possible combinations of opening/closing braces
      *
-     * @param s
+     * @param inputStr
      * @param index
      * @param set
      */
-    private static void fillSet(String s, int index, Set<String> set) {
+    private static void fillSet(String inputStr, int index, Set<String> set) {
 
-        final boolean minSize = (s.length() == currentStr.length() - numToDelete);
-        if (bracesClosed(s) && minSize) set.add(s);
+        final int maxStrSize = currentStr.length() - numToDelete;
+        final boolean minSize = (inputStr.length() == maxStrSize);
 
-        for (int i = index; i < s.length(); i++) {
-            final char c = s.charAt(i);
+        if (minSize && bracesBalanced(inputStr)) set.add(inputStr);
+
+        for (int i = index; i < inputStr.length(); i++) {
+            final char c = inputStr.charAt(i);
             if (deletionChar == c) {
-                final String s1 = s.substring(0, i) + s.substring(i + 1);
-                fillSet(s1, i, set);
+                final String newStr = inputStr.substring(0, i) + inputStr.substring(i + 1);
+                fillSet(newStr, i, set);
             }
         }
 
@@ -107,26 +120,26 @@ public class ReentrantLockValidator {
      * Check if all braces in string(str) are balanced
      * i.e. each opening brace has it's own closing brace.
      *
-     * @param str
-     * @return boolean
+     * @param str string to be checked
+     * @return true if string is balanced; false otherwise.
      */
-    private static boolean bracesClosed(String str) {
+    private static boolean bracesBalanced(String str) {
 
-        Stack<Character> stack = new Stack<>();
+        Stack<Character> bracesStack = new Stack<>();
 
         for (char c :
                 str.toCharArray()) {
             if (c != '{' && c != '}') continue;
             if (c == '{') {
-                stack.push(c);
+                bracesStack.push(c);
                 continue;
             }
-            if (stack.empty()) {
+            if (bracesStack.empty()) {
                 return false;
-            } else stack.pop();
+            } else bracesStack.pop();
         }
 
-        return stack.empty();
+        return bracesStack.empty();
     }
 
 }
