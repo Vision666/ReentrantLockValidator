@@ -6,33 +6,29 @@ import java.util.TreeSet;
 
 public class ReentrantLockValidator {
 
-    private static int numToDelete;
+    private static int finalStrSize;
     private static char deletionChar;
     private static String currentStr;
 
-    /**
-     * Delete minimal number of
-     *
-     * @param input
-     * @return
-     */
     public static Set<String> validate(String input) {
 
-        Set<String> set = new TreeSet<>();
+        final Set<String> set = new TreeSet<>();
 
         if (!edgeCasesCheck(input)) return set;
 
-        numToDelete = unnecessaryBraces(currentStr);
+        finalStrSize = unnecessaryBraces(currentStr);
 
-        fillSet(currentStr, 0, set);
+        fillSet(new StringBuilder(currentStr), 0, set);
 
         return set;
 
     }
 
     /**
-     * Get rid of all closing braces '}'  at the beginning
-     * and all opening braces '{' at the end of string(sb)
+     * To proceed calculations input string should meet next conditions:
+     * 1. it's not null;
+     * 2. it can't start with closing brace and end with opening brace
+     * 3. it should have at least one opening or closing braces pair
      *
      * @param str string to validate for edge cases
      * @return true if string meets all conditions; false otherwise.
@@ -51,8 +47,6 @@ public class ReentrantLockValidator {
             sb.deleteCharAt(index);
         }
 
-        //check if current string can be converted to "correct"
-        //i.e. string should have at least one opening and closing braces
         if (sb.indexOf("{") == -1 || sb.indexOf("}") == -1) return false;
 
         currentStr = sb.toString();
@@ -62,10 +56,10 @@ public class ReentrantLockValidator {
 
     /**
      * Count bare minimum number of braces that needed to be deleted
-     * from string(str) to make it "correct"
+     * from string to make it "valid"
      *
-     * @param str
-     * @return number of braces needed to delete
+     * @param str input string
+     * @return number of braces needed to be deleted
      */
     private static int unnecessaryBraces(String str) {
         int counter;
@@ -88,47 +82,51 @@ public class ReentrantLockValidator {
             deletionChar = '}';
         }
 
-        return counter;
+        return str.length() - counter;
 
     }
 
     /**
-     * Fill set with all possible combinations of opening/closing braces
+     * Fill set with all possible options of "valid" strings
      *
-     * @param inputStr
-     * @param index
-     * @param set
+     * @param inputStr input string
+     * @param index point in input string, from which the search of
+     * @param set contains all possible variants of opening/closing braces
      */
-    private static void fillSet(String inputStr, int index, Set<String> set) {
+    private static void fillSet(StringBuilder inputStr, int index, Set<String> set) {
 
-        final int maxStrSize = currentStr.length() - numToDelete;
-        final boolean minSize = (inputStr.length() == maxStrSize);
+        final int length = inputStr.length();
+        final boolean meetSize = (length == finalStrSize);
 
-        if (minSize && bracesBalanced(inputStr)) set.add(inputStr);
+        if (meetSize && bracesBalanced(inputStr)) set.add(inputStr.toString());
 
-        for (int i = index; i < inputStr.length(); i++) {
-            final char c = inputStr.charAt(i);
-            if (deletionChar == c) {
-                final String newStr = inputStr.substring(0, i) + inputStr.substring(i + 1);
-                fillSet(newStr, i, set);
+        if (length > finalStrSize) {
+            for (int i = index; i < length; i++) {
+                final char c = inputStr.charAt(i);
+                if (deletionChar == c) {
+                    final StringBuilder newStr = new StringBuilder(inputStr);
+                    newStr.deleteCharAt(i);
+                    fillSet(newStr, i, set);
+                }
             }
         }
 
     }
 
     /**
-     * Check if all braces in string(str) are balanced
+     * Check if all braces in string are balanced
      * i.e. each opening brace has it's own closing brace.
      *
      * @param str string to be checked
      * @return true if string is balanced; false otherwise.
      */
-    private static boolean bracesBalanced(String str) {
+    private static boolean bracesBalanced(StringBuilder str) {
 
         Stack<Character> bracesStack = new Stack<>();
 
-        for (char c :
-                str.toCharArray()) {
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+
             if (c != '{' && c != '}') continue;
             if (c == '{') {
                 bracesStack.push(c);
