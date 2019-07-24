@@ -26,7 +26,7 @@ public class ReentrantLockValidator {
      * To proceed calculations input string should meet next conditions:
      * 1. it's not null;
      * 2. it can't start with closing brace and end with opening brace;
-     * 3. if at least one open brace is present in the string, there must be at least one closing brace and vice versa.
+     * 3. if at least one opening brace is present in the string, there must be at least one closing brace and vice versa.
      *
      * @param str string to validate for edge cases
      * @return true if string meets all conditions; false otherwise.
@@ -55,7 +55,7 @@ public class ReentrantLockValidator {
     }
 
     /**
-     * Count bare minimum number of the braces that needed to be deleted
+     * Counts bare minimum number of the braces that needed to be deleted
      * from the string to make it "valid"
      *
      * @param str input string
@@ -87,7 +87,7 @@ public class ReentrantLockValidator {
     }
 
     /**
-     * Fill set with all possible options of the "valid" strings
+     * Fills set with all possible options of the "valid" strings
      *
      * @param inputStr input string
      * @param index point in input string, from which the search of
@@ -114,7 +114,7 @@ public class ReentrantLockValidator {
     }
 
     /**
-     * Check if all braces in the string are balanced
+     * Checks if all braces in the string are balanced
      * i.e. each opening brace has it's own closing brace.
      *
      * @param str string to be checked
