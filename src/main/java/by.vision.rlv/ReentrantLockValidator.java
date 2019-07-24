@@ -1,8 +1,6 @@
 package by.vision.rlv;
 
-import java.util.Set;
-import java.util.Stack;
-import java.util.TreeSet;
+import java.util.*;
 
 public class ReentrantLockValidator {
 
@@ -27,8 +25,8 @@ public class ReentrantLockValidator {
     /**
      * To proceed calculations input string should meet next conditions:
      * 1. it's not null;
-     * 2. it can't start with closing brace and end with opening brace
-     * 3. it should have at least one opening or closing braces pair
+     * 2. it can't start with closing brace and end with opening brace;
+     * 3. if at least one open brace is present in the string, there must be at least one closing brace and vice versa.
      *
      * @param str string to validate for edge cases
      * @return true if string meets all conditions; false otherwise.
@@ -47,16 +45,18 @@ public class ReentrantLockValidator {
             sb.deleteCharAt(index);
         }
 
-        if (sb.indexOf("{") == -1 || sb.indexOf("}") == -1) return false;
-
         currentStr = sb.toString();
 
-        return true;
+        final boolean hasOpeningBrace = sb.indexOf("{") != -1;
+        final boolean hasClosingBrace = sb.indexOf("}") != -1;
+
+        return hasOpeningBrace == hasClosingBrace;
+
     }
 
     /**
-     * Count bare minimum number of braces that needed to be deleted
-     * from string to make it "valid"
+     * Count bare minimum number of the braces that needed to be deleted
+     * from the string to make it "valid"
      *
      * @param str input string
      * @return number of braces needed to be deleted
@@ -87,7 +87,7 @@ public class ReentrantLockValidator {
     }
 
     /**
-     * Fill set with all possible options of "valid" strings
+     * Fill set with all possible options of the "valid" strings
      *
      * @param inputStr input string
      * @param index point in input string, from which the search of
@@ -114,7 +114,7 @@ public class ReentrantLockValidator {
     }
 
     /**
-     * Check if all braces in string are balanced
+     * Check if all braces in the string are balanced
      * i.e. each opening brace has it's own closing brace.
      *
      * @param str string to be checked
@@ -122,22 +122,22 @@ public class ReentrantLockValidator {
      */
     private static boolean bracesBalanced(StringBuilder str) {
 
-        Stack<Character> bracesStack = new Stack<>();
+        Deque<Character> bracesDeque = new ArrayDeque<>();
 
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
 
             if (c != '{' && c != '}') continue;
             if (c == '{') {
-                bracesStack.push(c);
+                bracesDeque.push(c);
                 continue;
             }
-            if (bracesStack.empty()) {
+            if (bracesDeque.isEmpty()) {
                 return false;
-            } else bracesStack.pop();
+            } else bracesDeque.removeLast();
         }
 
-        return bracesStack.empty();
+        return bracesDeque.isEmpty();
     }
 
 }
